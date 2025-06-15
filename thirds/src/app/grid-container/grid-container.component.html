@@ -1,0 +1,33 @@
+
+<div>
+    <h1 class="title">Grid</h1>
+    <p class="subtitle">Click on a square to change its value.</p>
+    <p class="subtitle">Click the buttons to change the grid.</p>
+</div>
+
+<div>
+    <h1>{{loseText}}</h1>
+</div>
+
+<div class="container">
+    <div class="north">
+        <button (click)="move(Direction.North)">&#9650;</button>
+    </div>
+    <div class="grid-container">
+        <button (click)="move(Direction.West)" class="west">&#9664;</button>
+      <section class="grid">
+        <div *ngFor="let rows of grid">
+            <app-grid-square
+            *ngFor="let columns of rows"
+            [square_value]="columns.value"
+            class="square"
+          />
+        </div>
+        
+      </section>
+      <button (click)="move(Direction.East)" class="east">&#9654;</button>
+    </div>
+    <div class="south">
+        <button (click)="move(Direction.South)">&#9660;</button>
+    </div>
+</div>
