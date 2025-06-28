@@ -2,14 +2,20 @@
 <div>
     <h1 class="title">Grid</h1>
     <p class="subtitle">Click on a square to change its value.</p>
-    <p class="subtitle">Click the buttons to change the grid.</p>
+    <p class="subtitle">Click the buttons or use the arrow keys to change the grid.</p>
 </div>
 
 <div>
-    <h1>{{loseText}}</h1>
+    <h1>IS GRID LOCKED{{this.noMovesLeft}}</h1>
 </div>
 
 <div class="container">
+    <div><h2>Current High Score: {{this.highScore}} in {{this.highScoreTurn}} turns.</h2></div>
+    <div><h2>Current Turn: {{this.currentTurn}}</h2></div>
+    <div class="north"><h1>NEXT GENERATED NUMBER:</h1>
+        <app-grid-square class="square" [square_value]="this.nextGeneratedNumber"></app-grid-square>
+    </div>
+    <div><button (click)="resetGame()">Reset Game</button></div>
     <div class="north">
         <button (click)="move(Direction.North)">&#9650;</button>
     </div>
