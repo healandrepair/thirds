@@ -26,8 +26,8 @@
             <app-grid-square
             *ngFor="let columns of rows"
             [square_value]="columns.value"
-            class="square"
-          />
+            [animationState]="columns.animationState" 
+            />
         </div>
         
       </section>

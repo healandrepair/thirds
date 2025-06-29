@@ -3,13 +3,32 @@ import { GridSquareComponent } from "../grid-square/grid-square.component";
 import { CommonModule } from '@angular/common';
 import { Direction } from '../direction';
 import { Square } from '../models/square';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-grid-container',
   imports: [GridSquareComponent, CommonModule],
   standalone: true,
   templateUrl: './grid-container.component.html',
-  styleUrl: './grid-container.component.css'
+  styleUrl: './grid-container.component.css',
+  animations: [
+    trigger('combineAnimation', [
+      state('default', style({
+        backgroundColor: '*', // Keep the default background color
+        transform: 'scale(1)'
+      })),
+      state('combined', style({
+        backgroundColor: 'yellow', // Highlight color for combined squares
+        transform: 'scale(1.2)'
+      })),
+      transition('default => combined', [
+        animate('0.5s ease-in-out') // Animation duration and easing
+      ]),
+      transition('combined => default', [
+        animate('0.5s ease-in-out') // Animation duration and easing
+      ])
+    ])
+  ]
 })
 export class GridContainerComponent implements OnInit {
   public Direction = Direction;
@@ -26,6 +45,9 @@ export class GridContainerComponent implements OnInit {
 
   currentTurn = 1;
   noMovesLeft = false;
+
+  private countOfOnes = 0; // Track the number of 1's generated
+  private countOfTwos = 0; // Track the number of 2's generated
 
   @HostListener('window:keydown', ['$event'])
   handleKey(event : Event) {
@@ -67,7 +89,8 @@ export class GridContainerComponent implements OnInit {
         const value = this.getWeightedRandom();
         const square : Square =  {
           x, y, value,
-          isEmpty: value !== 0 ? false : true
+          isEmpty: value !== 0 ? false : true,
+          animationState: 'default'
         };
 
         columns.push(square);
@@ -107,7 +130,6 @@ export class GridContainerComponent implements OnInit {
       }
       console.log("moved: " + Direction[direction])
 
-
       console.log("Generating squares")
       this.generateSquares(direction, this.nextGeneratedNumber);
 
@@ -117,22 +139,20 @@ export class GridContainerComponent implements OnInit {
 
   moveUp() : boolean {
     let canMove = false;
+    let combinedSquares = [];
 
     for (let x = 0; x < this.grid.length; x++) {
-      console.log("x: " + x)
-      console.log(this.grid.length)
 
       for (let y = 0; y < this.grid[x].length; y++) { 
         // No index out of range error
         if (y+1 >= this.grid[x].length) {
-          console.log("break")
           break;
         }
 
         let c1 = this.grid[x][y];
         let c2 = this.grid[x][y+1]
         const result = this.canCombine(c1, c2);
-        console.log(`Result for combining ${result} for c1: ${c1.value} (${c1.x}, ${c1.y}) for c2: ${c2.value} (${c2.x}, ${c2.y})`)
+        // console.log(`Result for combining ${result} for c1: ${c1.value} (${c1.x}, ${c1.y}) for c2: ${c2.value} (${c2.x}, ${c2.y})`)
         
         if (result) {
           // Set c1 with combined value
@@ -141,34 +161,33 @@ export class GridContainerComponent implements OnInit {
           this.grid[x][y+1].value = 0;
 
           canMove = true;
+          combinedSquares.push(this.grid[x][y]);
         }
       }
 
-      console.log("end x" + x)
-
     }
+
+    this.changeSquaresToCombinedSquares(combinedSquares);
 
     return canMove;
   }
 
   moveDown() : boolean {
     let canMove = false;
+    let combinedSquares = [];
 
     for (let x = 0; x < this.grid.length; x++) {
-      console.log("x: " + x)
-      console.log(this.grid.length)
 
       for (let y = this.grid.length -1; y >= 0; y--) { 
         // No index out of range error
         if (y - 1 < 0) {
-          console.log("break")
           break;
         }
 
         let c1 = this.grid[x][y];
         let c2 = this.grid[x][y-1]
         const result = this.canCombine(c1, c2);
-        console.log(`Result for combining ${result} for c1: ${c1.value} (${c1.x}, ${c1.y}) for c2: ${c2.value} (${c2.x}, ${c2.y})`)
+        // console.log(`Result for combining ${result} for c1: ${c1.value} (${c1.x}, ${c1.y}) for c2: ${c2.value} (${c2.x}, ${c2.y})`)
         
         if (result) {
           // Set c1 with combined value
@@ -177,25 +196,24 @@ export class GridContainerComponent implements OnInit {
           this.grid[x][y-1].value = 0;
 
           canMove = true;
+          combinedSquares.push(this.grid[x][y]);
         }
       }
-
-      console.log("end x" + x)
     }
+
+    this.changeSquaresToCombinedSquares(combinedSquares);
 
     return canMove;
   }
 
   moveLeft() : boolean {
     let canMove = false;
+    let combinedSquares = [];
 
     for (let y = 0; y < this.grid.length; y++) {
-      console.log("y: " + y)
-      console.log(this.grid.length)
-
       for (let x = 0; x < this.grid[x].length; x++) { 
         // No index out of range error
-        console.log("x" + x)
+        
         if (x+1 >= this.grid[x].length) {
           console.log("break")
           break;
@@ -204,7 +222,7 @@ export class GridContainerComponent implements OnInit {
         let c1 = this.grid[x][y];
         let c2 = this.grid[x+1][y]
         const result = this.canCombine(c1, c2);
-        console.log(`Result for combining ${result} for c1: ${c1.value} (${c1.x}, ${c1.y}) for c2: ${c2.value} (${c2.x}, ${c2.y})`)
+        // console.log(`Result for combining ${result} for c1: ${c1.value} (${c1.x}, ${c1.y}) for c2: ${c2.value} (${c2.x}, ${c2.y})`)
         
         if (result) {
           // Set c1 with combined value
@@ -212,33 +230,34 @@ export class GridContainerComponent implements OnInit {
           // Set c2 to be zero (empty)
           this.grid[x+1][y].value = 0;
           canMove = true;
+          combinedSquares.push(this.grid[x][y]);
         }
       }
 
       console.log("end y" + y)
     }
 
+    this.changeSquaresToCombinedSquares(combinedSquares);
+
     return canMove;
   }
 
   moveRight() : boolean {
     let canMove = false;
+    let combinedSquares = [];
 
     for (let x = this.grid.length -1; x >= 0; x--) { 
-      console.log("x: " + x)
-      console.log(this.grid.length)
 
       for (let y = 0; y < this.grid[x].length; y++) { 
         // No index out of range error
         if (x - 1 < 0) {
-          console.log("break")
           break;
         }
 
         let c1 = this.grid[x][y];
         let c2 = this.grid[x-1][y]
         const result = this.canCombine(c1, c2);
-        console.log(`Result for combining ${result} for c1: ${c1.value} (${c1.x}, ${c1.y}) for c2: ${c2.value} (${c2.x}, ${c2.y})`)
+        // console.log(`Result for combining ${result} for c1: ${c1.value} (${c1.x}, ${c1.y}) for c2: ${c2.value} (${c2.x}, ${c2.y})`)
         
         if (result) {
           // Set c1 with combined value
@@ -247,12 +266,12 @@ export class GridContainerComponent implements OnInit {
           this.grid[x-1][y].value = 0;
 
           canMove = true;
+          combinedSquares.push(this.grid[x][y]);
         }
       }
-
-      console.log("end x: " + x)
     }
-    console.log("ending right")
+
+    this.changeSquaresToCombinedSquares(combinedSquares);
 
     return canMove;
   }
@@ -267,7 +286,7 @@ export class GridContainerComponent implements OnInit {
     }
 
     // Cater for 1 and 2
-    if ((c1.value + c2.value) === 3) {
+    if ((c1.value !== 0 && c2.value !== 0 ) && (c1.value + c2.value) === 3) {
       return true;
     }
     else {
@@ -352,6 +371,7 @@ export class GridContainerComponent implements OnInit {
       y: randomSquare.y,
       value,
       isEmpty: value !== 0 ? false : true,
+      animationState: 'default'
     };
 
     console.log(`Generated value: ${value} at (${randomSquare.x}, ${randomSquare.y})`);
@@ -362,65 +382,62 @@ export class GridContainerComponent implements OnInit {
 
   
   getWeightedRandom(): number {
-    const values = [0, 1, 2, 3, 6, 12, 24];
-    const weights = [7, 1, 1, 5, 2, 0.5, 0.2];
-  
+    let values = [0, 1, 2, 3, 6, 12, 24];
+    let weights = [8, 3, 3, 4, 2, 0.5, 0.2];
+
+    // Adjust weights for 1 and 2 to balance their counts
+    if (this.countOfOnes > this.countOfTwos) {
+      weights[1] = 3; // Reduce weight for 1
+      weights[2] = 10; // Increase weight for 2
+    } else if (this.countOfTwos > this.countOfOnes) {
+      weights[1] = 10; // Increase weight for 1
+      weights[2] = 3; // Reduce weight for 2
+    }
+    console.log("countOfOnes:" + this.countOfOnes)
+    console.log("countOftwos:" + this.countOfTwos)
+    console.log(weights)
+
     // Calculate the cumulative weight
     const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
     const rand = Math.random() * totalWeight;
-  
+
     let cumulative = 0;
     for (let i = 0; i < values.length; i++) {
       cumulative += weights[i];
       if (rand < cumulative) {
+        // Track counts of 1's and 2's
+        if (values[i] === 1) this.countOfOnes++;
+        if (values[i] === 2) this.countOfTwos++;
         return values[i];
       }
     }
-  
+
     // Fallback (shouldn't happen)
     return values[0];
   }
 
   getWeightedRandomNextValue(): number {
     // Temp scaling
-  
-    if (this.nextGeneratedNumber === 1 && this.forceGenNumberCountTurn < 2) {
-      if (this.forceGenNumberCountTurn + 1 == 2) {
-        // generate a new number
-      }
-      else {
-        this.nextGeneratedNumber = 2;
-        this.forceGenNumberCountTurn++;
-        return this.nextGeneratedNumber;
-      }
-    }
-    else if (this.nextGeneratedNumber === 2 && this.forceGenNumberCountTurn < 2) {
-      if (this.forceGenNumberCountTurn + 1 == 2) {
-        // generate a new number
-
-      }
-      else {
-        this.nextGeneratedNumber = 1
-        this.forceGenNumberCountTurn++;
-        return this.nextGeneratedNumber;
-      }
-    }
-
-    const flagToGenerate3orHigher = this.forceGenNumberCountTurn === 1 ? true : false
-
     let values = [1, 2, 3, 6, 12, 24];
-    
-    const weights = this.getWeightsOfGeneratedNumbers(flagToGenerate3orHigher);
-    
-    // This means that we want to guarantee to generate a number thats not 1 or 2
-    if (this.forceGenNumberCountTurn == 1) {
-      values = values.slice(2);
+    let weights = [3, 3, 4, 2, 0.5, 0.2];
+
+    // Adjust weights for 1 and 2 to balance their counts
+    if (this.countOfOnes > this.countOfTwos) {
+      weights[0] = 3; // Reduce weight for 1
+      weights[1] = 12; // Increase weight for 2
+    } else if (this.countOfTwos > this.countOfOnes) {
+      weights[0] = 12; // Increase weight for 1
+      weights[1] = 3; // Reduce weight for 2
     }
 
-    console.log("count of force gen: "+ this.forceGenNumberCountTurn)
+    console.log("countOfOnes:" + this.countOfOnes)
+    console.log("countOftwos:" + this.countOfTwos)
+    console.log(weights)
 
-    // Reset count to 0 , we want to generate a number that its not 1 or 2.
-    this.forceGenNumberCountTurn = 0;
+    if (this.currentTurn > 25) {
+      values = [1, 2, 3, 6, 12, 24];
+      weights = this.getWeightsOfGeneratedNumbers(true);
+    }
 
     // Calculate the cumulative weight
     const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
@@ -430,6 +447,9 @@ export class GridContainerComponent implements OnInit {
     for (let i = 0; i < values.length; i++) {
       cumulative += weights[i];
       if (rand < cumulative) {
+        // Track counts of 1's and 2's
+        if (values[i] === 1) this.countOfOnes++;
+        if (values[i] === 2) this.countOfTwos++;
         return values[i];
       }
     }
@@ -442,7 +462,10 @@ export class GridContainerComponent implements OnInit {
     this.highScore = this.getHighScore();
     this.highScoreTurn = this.currentTurn > this.highScoreTurn ? this.currentTurn : this.highScoreTurn;
 
+    this.countOfOnes = 0;
+    this.countOfTwos = 0;
     this.startGrid();
+    
     this.noMovesLeft = this.isGridLocked();
   }
 
@@ -453,7 +476,7 @@ export class GridContainerComponent implements OnInit {
         const squareValue = this.grid[x][y]?.value || 0; // Use optional chaining and fallback
         if (highestCount < squareValue) {
           highestCount = squareValue;
-        }
+        }x
       }
     }
     return highestCount; // Ensure the function always returns a value
@@ -469,7 +492,7 @@ export class GridContainerComponent implements OnInit {
       weights = [1, 1, 4, 4, 2, 1];
     }
     else {
-      weights = [1, 1, 4, 4, 4, 2];
+      weights = [1, 1, 5, 4, 3, 2];
     }
 
     if (generateNumberNot1Or2) {
@@ -512,5 +535,15 @@ export class GridContainerComponent implements OnInit {
   
     // If no empty squares and no combinable squares, the grid is locked
     return true;
+  }
+
+  changeSquaresToCombinedSquares(squares: Square[]) {
+    squares.forEach(square => {
+      square.animationState = 'combined'; // Trigger the animation
+
+      setTimeout(() => {
+        square.animationState = 'default'; // Reset the animation state
+      }, 500); // Match the animation duration
+    });
   }
 }
