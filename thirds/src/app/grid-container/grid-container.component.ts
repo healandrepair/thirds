@@ -27,6 +27,22 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
       transition('combined => default', [
         animate('0.5s ease-in-out') // Animation duration and easing
       ])
+    ]),
+    trigger('spawnAnimation', [
+      state('default', style({
+        backgroundColor: '*', // Keep the default background color
+        transform: 'scale(1)'
+      })),
+      state('spawn', style({
+        backgroundColor: 'orange', // Highlight color for combined squares
+        transform: 'scale(1.2)'
+      })),
+      transition('default => combined', [
+        animate('0.7s ease-in-out') // Animation duration and easing
+      ]),
+      transition('combined => default', [
+        animate('1s ease-in-out') // Animation duration and easing
+      ])
     ])
   ]
 })
@@ -45,6 +61,49 @@ export class GridContainerComponent implements OnInit {
 
   currentTurn = 1;
   noMovesLeft = false;
+
+  get getterNoMovesLeft() : boolean {
+    return this.noMovesLeft;
+  }
+
+  set setterNoMovesLeft(value : boolean ) {
+    this.noMovesLeft = value;
+    if (value) {
+      this.onNoMovesLeft();
+    }
+  }
+
+  onNoMovesLeft() {
+    console.log("No moves left! Game Over.");
+    // Show a "Game Over" modal or handle game-over logic
+    const gameOverModal = document.querySelector('#gameOverModal') as HTMLDialogElement;
+    if (gameOverModal) {
+      gameOverModal.showModal();
+    }
+  }
+
+  closeModal() {
+    const gameOverModal = document.querySelector('#gameOverModal') as HTMLDialogElement;
+    if (gameOverModal) {
+      gameOverModal.close();
+    }
+  }
+
+  closeInstructionsModal() {
+    const openInstructionsModal = document.querySelector('#instructionsModal') as HTMLDialogElement;
+    if (openInstructionsModal) {
+      openInstructionsModal.close();
+    }
+  }
+
+  openInstructionsModal() {
+    const instructionsModal = document.querySelector('#instructionsModal') as HTMLDialogElement;
+    if (instructionsModal) {
+        instructionsModal.showModal();
+    } else {
+        console.error('Instructions modal not found!');
+    }
+}
 
   private countOfOnes = 0; // Track the number of 1's generated
   private countOfTwos = 0; // Track the number of 2's generated
@@ -131,10 +190,13 @@ export class GridContainerComponent implements OnInit {
       console.log("moved: " + Direction[direction])
 
       console.log("Generating squares")
-      this.generateSquares(direction, this.nextGeneratedNumber);
+      const generatedSquare = this.generateSquares(direction, this.nextGeneratedNumber);
+      if (generatedSquare !== null) {
+        this.changeSquaresToSpawnSquares(generatedSquare);
+      }
 
       this.nextGeneratedNumber = this.getWeightedRandomNextValue();
-      this.noMovesLeft = this.isGridLocked(); 
+      this.setterNoMovesLeft = this.isGridLocked(); 
   }
 
   moveUp() : boolean {
@@ -155,13 +217,18 @@ export class GridContainerComponent implements OnInit {
         // console.log(`Result for combining ${result} for c1: ${c1.value} (${c1.x}, ${c1.y}) for c2: ${c2.value} (${c2.x}, ${c2.y})`)
         
         if (result) {
+          if (c1.value !== 0) {
+            // Dont do combine animation if c1 is 0 and c2 is non zero.
+            combinedSquares.push(this.grid[x][y]);
+          }
           // Set c1 with combined value
           this.grid[x][y].value = c1.value + c2.value
           // Set c2 to be zero (empty)
           this.grid[x][y+1].value = 0;
 
           canMove = true;
-          combinedSquares.push(this.grid[x][y]);
+
+
         }
       }
 
@@ -190,13 +257,16 @@ export class GridContainerComponent implements OnInit {
         // console.log(`Result for combining ${result} for c1: ${c1.value} (${c1.x}, ${c1.y}) for c2: ${c2.value} (${c2.x}, ${c2.y})`)
         
         if (result) {
+          if (c1.value !== 0) {
+            // Dont do combine animation if c1 is 0 and c2 is non zero.
+            combinedSquares.push(this.grid[x][y]);
+          }
           // Set c1 with combined value
           this.grid[x][y].value = c1.value + c2.value
           // Set c2 to be zero (empty)
           this.grid[x][y-1].value = 0;
 
           canMove = true;
-          combinedSquares.push(this.grid[x][y]);
         }
       }
     }
@@ -225,12 +295,15 @@ export class GridContainerComponent implements OnInit {
         // console.log(`Result for combining ${result} for c1: ${c1.value} (${c1.x}, ${c1.y}) for c2: ${c2.value} (${c2.x}, ${c2.y})`)
         
         if (result) {
+          if (c1.value !== 0) {
+            // Dont do combine animation if c1 is 0 and c2 is non zero.
+            combinedSquares.push(this.grid[x][y]);
+          }
           // Set c1 with combined value
           this.grid[x][y].value = c1.value + c2.value
           // Set c2 to be zero (empty)
           this.grid[x+1][y].value = 0;
           canMove = true;
-          combinedSquares.push(this.grid[x][y]);
         }
       }
 
@@ -260,13 +333,16 @@ export class GridContainerComponent implements OnInit {
         // console.log(`Result for combining ${result} for c1: ${c1.value} (${c1.x}, ${c1.y}) for c2: ${c2.value} (${c2.x}, ${c2.y})`)
         
         if (result) {
+          if (c1.value !== 0) {
+            // Dont do combine animation if c1 is 0 and c2 is non zero.
+            combinedSquares.push(this.grid[x][y]);
+          }
           // Set c1 with combined value
           this.grid[x][y].value = c1.value + c2.value
           // Set c2 to be zero (empty)
           this.grid[x-1][y].value = 0;
 
           canMove = true;
-          combinedSquares.push(this.grid[x][y]);
         }
       }
     }
@@ -304,7 +380,7 @@ export class GridContainerComponent implements OnInit {
     return false;
   }
 
-  generateSquares(direction : Direction, nextGeneratedSquare : number) {
+  generateSquares(direction : Direction, nextGeneratedSquare : number) : Square | null {
     // Squares should generate if there is space at the opposite direction moved.
     const rows = this.grid.length - 1;
     const col = this.grid[0].length - 1
@@ -356,7 +432,7 @@ export class GridContainerComponent implements OnInit {
     // If there are no empty squares, do nothing
     if (emptySquares.length === 0) {
       console.log("No empty squares available to generate a new square.");
-      return;
+      return null;
     }
 
     // Randomly select one empty square
@@ -371,13 +447,15 @@ export class GridContainerComponent implements OnInit {
       y: randomSquare.y,
       value,
       isEmpty: value !== 0 ? false : true,
-      animationState: 'default'
+      animationState: 'spawn'
     };
 
     console.log(`Generated value: ${value} at (${randomSquare.x}, ${randomSquare.y})`);
     this.grid[randomSquare.x][randomSquare.y] = square;
 
     this.currentTurn++;
+
+    return square;
   }
 
   
@@ -423,18 +501,18 @@ export class GridContainerComponent implements OnInit {
 
     // Adjust weights for 1 and 2 to balance their counts
     if (this.countOfOnes > this.countOfTwos) {
-      weights[0] = 3; // Reduce weight for 1
+      weights[0] = 2; // Reduce weight for 1
       weights[1] = 12; // Increase weight for 2
     } else if (this.countOfTwos > this.countOfOnes) {
       weights[0] = 12; // Increase weight for 1
-      weights[1] = 3; // Reduce weight for 2
+      weights[1] = 2; // Reduce weight for 2
     }
 
     console.log("countOfOnes:" + this.countOfOnes)
     console.log("countOftwos:" + this.countOfTwos)
     console.log(weights)
 
-    if (this.currentTurn > 25) {
+    if (this.currentTurn > 40) {
       values = [1, 2, 3, 6, 12, 24];
       weights = this.getWeightsOfGeneratedNumbers(true);
     }
@@ -465,6 +543,8 @@ export class GridContainerComponent implements OnInit {
     this.countOfOnes = 0;
     this.countOfTwos = 0;
     this.startGrid();
+
+    this.closeModal();
     
     this.noMovesLeft = this.isGridLocked();
   }
@@ -488,11 +568,13 @@ export class GridContainerComponent implements OnInit {
     if (this.currentTurn <= 15) {
       ;
     }
-    else if (this.currentTurn > 15 && this.currentTurn < 30) {
+    else if (this.currentTurn > 15 && this.currentTurn < 50) {
       weights = [1, 1, 4, 4, 2, 1];
+      return weights;
     }
     else {
       weights = [1, 1, 5, 4, 3, 2];
+      return weights;
     }
 
     if (generateNumberNot1Or2) {
@@ -543,7 +625,15 @@ export class GridContainerComponent implements OnInit {
 
       setTimeout(() => {
         square.animationState = 'default'; // Reset the animation state
-      }, 500); // Match the animation duration
+      }, 1000); // Match the animation duration
     });
+  }
+
+  changeSquaresToSpawnSquares(square: Square) {
+      square.animationState = 'spawn'; // Trigger the animation
+
+      setTimeout(() => {
+        square.animationState = 'default'; // Reset the animation state
+      }, 1000); // Match the animation duration
   }
 }

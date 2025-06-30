@@ -8,6 +8,13 @@
     margin: 0; /* Remove margin */
 }
 
+.menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 .container {
     display: flex;
     flex-direction: column; /* Stack items vertically */
@@ -42,3 +49,4 @@
     padding-top: 2px;
     margin: 10px;
 }
+

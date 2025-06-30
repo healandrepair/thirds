@@ -11,6 +11,7 @@
     gap: 0;
     margin: 0;
     padding: 0;
+    color: black;
 }
 
 .combineAnimation {
@@ -27,28 +28,75 @@
     margin: 0;
     padding: 0;
     transition: background-color 1 ease !important;
-    animation: pulse-bg 2s infinite !important;
+    animation: pulse-bg 1s ease-in-out !important;
 }
 
-  /* @keyframes pulse-bg {
+    @keyframes pulse-bg {
     0% {
-      background-color: lightgrey;
+        background-color: lightgray;
+    }
+    25% {
+        background-color: rgb(252, 245, 135); /* Intermediate step */
     }
     50% {
-      background-color: rgb(52, 52, 52)
+        background-color: yellow;
+    }
+    75% {
+        background-color: rgb(255, 241, 47); /* Intermediate step */
     }
     100% {
-      background-color: lightgrey;
+        background-color: lightgray;
     }
-  } */
-  @keyframes pulse-bg {
+}
+
+.spawnAnimation {
+    border: solid black 2px;
+    border-radius: 10px;
+    display: grid;
+    width: 13vh; /* Set width equal to height */
+    height: 13vh; /* Keep height as it is */
+    justify-content: center;
+    align-items: center;
+    background-color: lightgrey; /* Default background color */
+    font-family: 'Arial', Courier, monospace;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    color: black; 
+    transition: background-color 1s ease !important;
+    animation: spawn-effect 1.5s ease-in-out !important; /* Single animation */
+}
+
+@keyframes spawn-effect {
     0% {
-      background-color: yellow;
+        background-color: rgba(0, 0, 0, 0); /* Start fully transparent */
+        filter: blur(10px); /* Start with a heavy blur */
+        opacity: 0; /* Fully transparent */
+        border: solid black 2px; /* Ensure the border is visible */
+        color: white
+    }
+    25% {
+        background-color: rgba(0, 0, 0, 0.5); /* Partially visible */
+        filter: blur(5px); /* Reduce blur */
+        opacity: 0.5; /* Partially visible */
+        border: solid black 2px; /* Keep the border visible */
     }
     50% {
-      background-color: orange;
+        background-color: rgba(0, 0, 0, 0.75); /* More visible */
+        filter: blur(3px); /* Further reduce blur */
+        opacity: 0.75; /* More visible */
+        border: solid black 2px; /* Keep the border visible */
+    }
+    75% {
+        background-color: inherit; /* Almost fully visible */
+        filter: blur(1px); /* Almost clear */
+        opacity: 0.9; /* Almost fully visible */
+        border: solid black 2px; /* Keep the border visible */
     }
     100% {
-      background-color: yellow;
+        background-color: inherit; /* Fully visible */
+        filter: blur(0); /* Fully clear */
+        opacity: 1; /* Fully visible */
+        border: solid black 2px; /* Keep the border visible */
     }
-  }
+}

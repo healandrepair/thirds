@@ -12,10 +12,10 @@ import { CommonModule } from '@angular/common';
 })
 export class GridSquareComponent {
   @Input() square_value : number = 0;
-  @Input() animationState: 'default' | 'combined' = 'default'; // Add animation state
+  @Input() animationState: 'default' | 'combined' | 'spawn' = 'default'; // Add animation state
 
   getBackgroundColor() {
-    if (this.animationState === 'combined') {
+    if (this.animationState === 'combined' || this.animationState === 'spawn') {
       return ''
     }
 

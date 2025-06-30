@@ -1,21 +1,41 @@
 
-<div>
-    <h1 class="title">Grid</h1>
-    <p class="subtitle">Click on a square to change its value.</p>
-    <p class="subtitle">Click the buttons or use the arrow keys to change the grid.</p>
+<div class="menu">
+    <h1 title="threes" >Threes</h1>
+    <button (click)="openInstructionsModal()">How To Play</button>
 </div>
+<dialog class="instructionsModal" id="instructionsModal">
+    <p class="subtitle">This is a number-based puzzle game where the goal is to combine tiles on a 4x4 grid to create higher multiples of three, with the game ending when no moves are possible.
+         Players slide numbered tiles (1, 2, and multiples of 3) around the grid, merging identical numbers or combining a 1 and a 2 to create a 3. 
+         Each move results in a new tile appearing on the grid, and the player's score is the sum of all tile values at the end of the game. 
+    </p>
+    <p class="subtitle">Click the buttons or use the arrow keys to move all squares in that direction.</p>
+    <div class="menu">
+        <button (click)="closeInstructionsModal()">Close</button>
+    </div>
+</dialog>
 
-<div>
-    <h1>IS GRID LOCKED{{this.noMovesLeft}}</h1>
-</div>
+
 
 <div class="container">
-    <div><h2>Current High Score: {{this.highScore}} in {{this.highScoreTurn}} turns.</h2></div>
-    <div><h2>Current Turn: {{this.currentTurn}}</h2></div>
-    <div class="north"><h1>NEXT GENERATED NUMBER:</h1>
-        <app-grid-square class="square" [square_value]="this.nextGeneratedNumber"></app-grid-square>
+    <div class="menu">
+        <div><h2>Current High Score: {{this.highScore}} in {{this.highScoreTurn}} turns.</h2></div>
+        <div><h2>Current Turn: {{this.currentTurn}}</h2></div>
+        <div>
+            
+        </div>
+        <div class="north"><h1>NEXT GENERATED NUMBER:</h1>
+            <app-grid-square class="square" [square_value]="this.nextGeneratedNumber"></app-grid-square>
+        </div>
+        <dialog class="gameOverModal" id="gameOverModal">
+            <h1>Game Over!</h1>
+            <div><h2>Current Score: {{getHighScore()}} in {{this.currentTurn}} turns.</h2></div>
+            <div>
+                <button (click)="resetGame()">Reset Game</button>
+            </div>
+
+        </dialog>
     </div>
-    <div><button (click)="resetGame()">Reset Game</button></div>
+   
     <div class="north">
         <button (click)="move(Direction.North)">&#9650;</button>
     </div>

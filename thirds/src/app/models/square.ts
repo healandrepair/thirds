@@ -3,5 +3,5 @@ export interface Square {
     y: number;
     value: number;
     isEmpty: boolean;
-    animationState: 'default' | 'combined'; // Add animation state
+    animationState: 'default' | 'combined' | 'spawn'; // Add animation state
 }

@@ -1,5 +1,5 @@
 <div 
-  [ngClass]="{'combineAnimation': animationState === 'combined', 'square': animationState === 'default'}"
+  [ngClass]="{'combineAnimation': animationState === 'combined', 'spawnAnimation': animationState === 'spawn', 'square': animationState === 'default'}"
   [ngStyle]="{'background-color': getBackgroundColor()}">
   {{ square_value !== 0 ? square_value : "" }}
 </div>
