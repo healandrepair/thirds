@@ -74,7 +74,7 @@ export class GridContainerComponent implements OnInit {
   }
 
   onNoMovesLeft() {
-    console.log("No moves left! Game Over.");
+    // console.log("No moves left! Game Over.");
     // Show a "Game Over" modal or handle game-over logic
     const gameOverModal = document.querySelector('#gameOverModal') as HTMLDialogElement;
     if (gameOverModal) {
@@ -158,7 +158,7 @@ export class GridContainerComponent implements OnInit {
       rows.push(columns)
     }
 
-    console.log(rows)
+    // console.log(rows)
 
     this.grid = rows;
     this.currentTurn = 1;
@@ -187,9 +187,9 @@ export class GridContainerComponent implements OnInit {
         // Exit early if cant move;
         return;
       }
-      console.log("moved: " + Direction[direction])
+      // console.log("moved: " + Direction[direction])
 
-      console.log("Generating squares")
+      // console .log("Generating squares")
       const generatedSquare = this.generateSquares(direction, this.nextGeneratedNumber);
       if (generatedSquare !== null) {
         this.changeSquaresToSpawnSquares(generatedSquare);
@@ -285,7 +285,7 @@ export class GridContainerComponent implements OnInit {
         // No index out of range error
         
         if (x+1 >= this.grid[x].length) {
-          console.log("break")
+          // console.log("break")
           break;
         }
 
@@ -307,7 +307,7 @@ export class GridContainerComponent implements OnInit {
         }
       }
 
-      console.log("end y" + y)
+      // console.log("end y" + y)
     }
 
     this.changeSquaresToCombinedSquares(combinedSquares);
@@ -426,8 +426,8 @@ export class GridContainerComponent implements OnInit {
       }
     }
 
-    console.log("logging emptys")
-    console.log(emptySquares)
+    // console.log("logging emptys")
+    // console.log(emptySquares)
 
     // If there are no empty squares, do nothing
     if (emptySquares.length === 0) {
@@ -450,7 +450,7 @@ export class GridContainerComponent implements OnInit {
       animationState: 'spawn'
     };
 
-    console.log(`Generated value: ${value} at (${randomSquare.x}, ${randomSquare.y})`);
+    // console.log(`Generated value: ${value} at (${randomSquare.x}, ${randomSquare.y})`);
     this.grid[randomSquare.x][randomSquare.y] = square;
 
     this.currentTurn++;
@@ -471,9 +471,9 @@ export class GridContainerComponent implements OnInit {
       weights[1] = 10; // Increase weight for 1
       weights[2] = 3; // Reduce weight for 2
     }
-    console.log("countOfOnes:" + this.countOfOnes)
-    console.log("countOftwos:" + this.countOfTwos)
-    console.log(weights)
+    // console.log("countOfOnes:" + this.countOfOnes)
+    // console.log("countOftwos:" + this.countOfTwos)
+    // console.log(weights)
 
     // Calculate the cumulative weight
     const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
@@ -508,9 +508,9 @@ export class GridContainerComponent implements OnInit {
       weights[1] = 2; // Reduce weight for 2
     }
 
-    console.log("countOfOnes:" + this.countOfOnes)
-    console.log("countOftwos:" + this.countOfTwos)
-    console.log(weights)
+    // console.log("countOfOnes:" + this.countOfOnes)
+    // console.log("countOftwos:" + this.countOfTwos)
+    // console.log(weights)
 
     if (this.currentTurn > 40) {
       values = [1, 2, 3, 6, 12, 24];
