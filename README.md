@@ -1,4 +1,4 @@
-# thirds
+# threes
 A puzzle game written in Angular.
 https://healandrepair.github.io/thirds/
 <br>
