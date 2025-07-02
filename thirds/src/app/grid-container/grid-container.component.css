@@ -36,10 +36,8 @@
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* Fixed width squares */
-    grid-template-rows: repeat(4, 1fr); /* Fixed height squares */
-    width: 100%;
-    height: 100%;
+    grid-template-columns: repeat(4, 13vh); /* Fixed width squares */
+    grid-template-rows: repeat(4, 13vh); /* Fixed height squares */
     gap: 0; /* Remove gaps between grid items */
 }
 
@@ -79,6 +77,8 @@
     .grid {
         grid-template-columns: repeat(4, 1fr); /* Keep 4 columns */
         grid-template-rows: repeat(4, 1fr); /* Keep 4 rows */
+        width: 100%;
+        height: 100%;
     }
 
     button {
