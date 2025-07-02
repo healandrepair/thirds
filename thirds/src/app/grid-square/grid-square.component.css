@@ -100,3 +100,18 @@
         border: solid black 2px; /* Keep the border visible */
     }
 }
+
+@media (max-width: 768px) {
+    .square, .combineAnimation, .spawnAnimation {
+        width: 10vh; /* Reduce size for smaller screens */
+        height: 10vh;
+    }
+}
+
+/* Adjust size for mobile phones */
+@media (max-width: 480px) {
+    .square, .combineAnimation, .spawnAnimation {
+        width: 8.7vh; /* Further reduce size for mobile phones */
+        height: 8.7vh;
+    }
+}

@@ -3,7 +3,7 @@
     justify-content: center; /* Center horizontally */
     align-items: center; /* Center vertically */
     height: 60vh; /* Full viewport height */
-    width: 100vw; /* Full viewport width */
+    width: 90vw; /* Full viewport width */
     padding: 0; /* Remove padding */
     margin: 0; /* Remove margin */
 }
@@ -15,18 +15,31 @@
     align-items: center;
 }
 
+.topmenu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 4px;
+    background: linear-gradient(135deg, rgb(0, 88, 139), rgb(167, 251, 255)); /* Gradient from gray to light gray */
+}
+
+
 .container {
     display: flex;
     flex-direction: column; /* Stack items vertically */
     justify-content: center; /* Center items vertically */
     align-items: center; /* Center items horizontally */
     margin: 0;
+    background: linear-gradient(135deg, rgb(70, 70, 70), rgb(204, 204, 204)); /* Gradient from gray to light gray */
 }
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(4, 13vh); /* Fixed width squares */
-    grid-template-rows: repeat(4, 13vh); /* Fixed height squares */
+    grid-template-columns: repeat(4, 1fr); /* Fixed width squares */
+    grid-template-rows: repeat(4, 1fr); /* Fixed height squares */
+    width: 100%;
+    height: 100%;
     gap: 0; /* Remove gaps between grid items */
 }
 
@@ -50,3 +63,26 @@
     margin: 10px;
 }
 
+.nextGenNumberText {
+    background-color: rgb(204, 204, 204);
+    padding: 5px;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+    .grid-container {
+        height: 40vh; /* Further reduce height */
+        width: 100vw; /* Use full width */
+    }
+
+    .grid {
+        grid-template-columns: repeat(4, 1fr); /* Keep 4 columns */
+        grid-template-rows: repeat(4, 1fr); /* Keep 4 rows */
+    }
+
+    button {
+        font-size: 0.8rem; /* Further reduce button size */
+        padding: 3px;
+    }
+}

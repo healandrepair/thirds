@@ -1,5 +1,5 @@
 
-<div class="menu">
+<div class="topmenu">
     <title>Threes</title>
     <h1 title="threes" >Threes</h1>
     <button (click)="openInstructionsModal()">How To Play</button>
@@ -19,14 +19,11 @@
 
 <div class="container">
     <div class="menu">
-        <div><h2>Current High Score: {{this.highScore}} in {{this.highScoreTurn}} turns.</h2></div>
-        <div><h2>Current Turn: {{this.currentTurn}}</h2></div>
-        <div>
-            
-        </div>
-        <div class="north"><h1>NEXT GENERATED NUMBER:</h1>
-            <app-grid-square class="square" [square_value]="this.nextGeneratedNumber"></app-grid-square>
-        </div>
+        <div><h3 class="nextGenNumberText">Current High Score: {{this.highScore}} in {{this.highScoreTurn}} turns.</h3></div>
+        <div><h2 class="nextGenNumberText">Current Turn: {{this.currentTurn}}</h2></div>
+        <h3 class="nextGenNumberText">Next Generated Number:</h3>
+
+        <app-grid-square class="square" [square_value]="this.nextGeneratedNumber"></app-grid-square>
         <dialog class="gameOverModal" id="gameOverModal">
             <h1>Game Over!</h1>
             <div><h2>Current Score: {{getHighScore()}} in {{this.currentTurn}} turns.</h2></div>
