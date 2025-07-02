@@ -1,2 +1,4 @@
 # thirds
-A puzzle game
+A puzzle game.
+
+https://healandrepair.github.io/thirds/
